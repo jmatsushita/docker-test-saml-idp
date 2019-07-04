@@ -18,6 +18,7 @@ COPY config/simplesamlphp/authsources.php /var/www/simplesamlphp/config
 COPY config/simplesamlphp/saml20-sp-remote.php /var/www/simplesamlphp/metadata
 COPY config/simplesamlphp/server.crt /var/www/simplesamlphp/cert/
 COPY config/simplesamlphp/server.pem /var/www/simplesamlphp/cert/
+ADD ./uid_entrypoint.sh /usr/bin
 
 # Apache
 COPY config/apache/ports.conf /etc/apache2
@@ -33,4 +34,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
 WORKDIR /var/www/simplesamlphp
 
 # General setup
-EXPOSE 8080 8443
+EXPOSE 8080
+RUN useradd -m -u 10001 -G 0 -s /bin/bash saml_idp
+RUN chgrp -R 0 /etc/ssl
+RUN chmod -R g=u /etc/passwd /etc/ssl
+ENTRYPOINT [ "/usr/bin/uid_entrypoint.sh" ]
+USER 10001
