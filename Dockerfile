@@ -37,6 +37,7 @@ WORKDIR /var/www/simplesamlphp
 EXPOSE 8080
 RUN useradd -m -u 10001 -G 0 -s /bin/bash saml_idp
 RUN chgrp -R 0 /etc/ssl
-RUN chmod -R g=u /etc/passwd /etc/ssl
+RUN chmod -R g=u /etc/passwd /etc/ssl /var/www/simplesamlphp
+CMD ["apache2-foreground"]
 ENTRYPOINT [ "/usr/bin/uid_entrypoint.sh" ]
 USER 10001
